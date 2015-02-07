@@ -7,7 +7,7 @@ var request    = require('request')
 // 
 // url      - The String feed url, or an Array of urls.
 // callback - Receives `(err, articles)`, where each article has properties:
-//          
+//              * "guid"
 //              * "title"
 //              * "author"
 //              * "link"
@@ -119,7 +119,7 @@ FeedRead.atom = function(xml, source, callback) {
         if (author) author = child_data(author, "name");
         
         var obj = {
-            title:     child_data(art, "title")
+          title:     child_data(art, "title")
           , content:   scrub_html(child_data(art, "content"))
           , published: child_data(art, "published")
                     || child_data(art, "updated")
@@ -174,7 +174,8 @@ FeedRead.rss = function(xml, source, callback) {
       function(art) {
         if (!art.children.length) return false;
         var obj = {
-            title:     child_data(art, "title")
+	    guid:      child_data(art, "guid") || child_data(art, "id")
+          , title:     child_data(art, "title")
           , content:   scrub_html(child_data(art, "content:encoded"))
                     || scrub_html(child_data(art, "description"))
           , published: child_data(art, "pubDate")
